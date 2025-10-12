@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "code-execution-mcp"
+version = "0.1.0"
+description = "MCP server for executing terminal commands and Python code"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Agent Zero Team"}
+]
+dependencies = [
+    "fastmcp>=2.0.0",
+    "ipython>=8.0.0",
+    "nest-asyncio>=1.5.0",
+    "webcolors>=1.13.0",
+]
+
+[project.optional-dependencies]
+windows = [
+    "pywinpty>=2.0.0",
+]
+
+[project.scripts]
+code-execution-mcp = "main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
