@@ -12,28 +12,45 @@ This MCP server allows any AI agent (Claude, GPT-4, etc.) to execute terminal co
 - **Smart Output Handling**: Automatic prompt detection, timeout management, and dialog detection
 - **Cross-Platform**: Works on Linux, macOS, and Windows (experimental)
 
-## Installation
+## MCP Client Configuration (no installation needed)
 
-```bash
-# Clone or download this package
-cd code-execution-mcp
+Add to your application MCP config:
 
-# Install dependencies
-pip install -e .
+- simple case using uvx
 
-# For Windows support
-pip install -e ".[windows]"
+```json
+{
+  "mcpServers": {
+    "code-execution": {
+      "command": "uvx",
+      "args": ["code-execution-mcp"]
+    }
+  }
+}
 ```
 
-## Configuration
+- or pipx if uvx is not installed
+
+```json
+{
+  "mcpServers": {
+    "code-execution": {
+      "command": "pipx",
+      "args": ["run", "code-execution-mcp"]
+    }
+  }
+}
+```
+
+## Additional configuration
 
 The MCP server can be configured via environment variables:
 
 ```bash
-# Shell executable (default: /bin/bash on Unix, cmd.exe on Windows)
+# Shell executable (default: /bin/bash on Unix, powershell.exe on Windows)
 export CODE_EXEC_EXECUTABLE=/bin/bash
 
-# Init commands (semicolon-separated, run when creating new sessions)
+# Init commands (semicolon-separated, run when creating new sessions, empty by default)
 export CODE_EXEC_INIT_COMMANDS="source /path/to/venv/bin/activate;export PATH=\$PATH:/custom/bin"
 
 # Timeout configuration (in seconds)
@@ -43,20 +60,61 @@ export CODE_EXEC_DIALOG_TIMEOUT=5             # Detect dialog prompts
 export CODE_EXEC_MAX_EXEC_TIMEOUT=180         # Maximum execution time
 ```
 
-## MCP Client Configuration
+### Additional examples
 
-Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+- start sessions with custom shell and python environment
 
 ```json
 {
   "mcpServers": {
-    "code-execution": {
-      "command": "python",
-      "args": ["/Users/lazy/Projects/A0-code-tool-MCP/code-execution-mcp/main.py"],
+    "code-execution-mcp": {
+      "command": "uvx",
+      "args": ["code-execution-mcp"],
       "env": {
-        "CODE_EXEC_EXECUTABLE": "/bin/bash",
+        "CODE_EXEC_EXECUTABLE": "/bin/zsh",
         "CODE_EXEC_INIT_COMMANDS": "source /Users/lazy/Projects/A0-code-tool-MCP/code-execution-mcp/.venv/bin/activate"
       }
+    }
+  }
+}
+```
+
+- override timeouts
+
+```json
+{
+  "mcpServers": {
+    "code-execution-mcp": {
+      "command": "uvx",
+      "args": ["code-execution-mcp"],
+      "env": {
+        "CODE_EXEC_FIRST_OUTPUT_TIMEOUT": "60",
+        "CODE_EXEC_MAX_EXEC_TIMEOUT": "300"
+      }
+    }
+  }
+}
+```
+
+## Manual installation
+
+```bash
+# Clone or download this package, then navigate to the directory
+git clone https://github.com/agent0ai/code-execution-mcp.git
+cd </path/to>/code-execution-mcp
+
+# Install dependencies
+pip install -e .
+```
+
+and run with config:
+
+```json
+{
+  "mcpServers": {
+    "code-execution-mcp": {
+      "command": "python",
+      "args": ["</path/to/code-execution-mcp>/main.py"]
     }
   }
 }
@@ -65,63 +123,64 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 ## Available Tools
 
 ### execute_terminal
+
 Execute a terminal command in the specified session.
 
 **Parameters:**
-- `command` (string, required): The shell command to execute
-- `session` (integer, optional): Session number (default: 0)
 
-**Example:**
-```python
-await execute_terminal(command="ls -la", session=0)
-```
+- `command` (string, required): The shell command to execute
+- `session` (integer, optional): Session (terminal window) number (default: 0)
+
+**Output:**
+
+- (string) The accumulated terminal output from the session
 
 ### execute_python
+
 Execute Python code via IPython in the specified session.
 
 **Parameters:**
-- `code` (string, required): The Python code to execute
-- `session` (integer, optional): Session number (default: 0)
 
-**Example:**
-```python
-await execute_python(code="import sys; print(sys.version)", session=0)
-```
+- `code` (string, required): The Python code to execute
+- `session` (integer, optional): Session (terminal window) number (default: 0)
+
+**Output:**
+
+- (string) The accumulated IPython output from the session
 
 ### get_output
+
 Get accumulated output from a terminal session.
 
 **Parameters:**
-- `session` (integer, optional): Session number (default: 0)
 
-**Example:**
-```python
-await get_output(session=0)
-```
+- `session` (integer, optional): Session (terminal window) number (default: 0)
+
+**Output:**
+
+- (string) The accumulated terminal output from the session
 
 ### reset_terminal
+
 Reset a terminal session, closing and reopening it.
 
 **Parameters:**
-- `session` (integer, optional): Session number (default: 0)
+
+- `session` (integer, optional): Session (terminal window) number (default: 0)
 - `reason` (string, optional): Reason for the reset
 
-**Example:**
-```python
-await reset_terminal(session=0, reason="Environment corrupted")
-```
+**Output:**
+
+- (string) Text confirmation for the agent
 
 ## Session Management
 
-Sessions allow maintaining separate execution contexts:
+- Sessions (terminal instances) allow maintaining separate execution contexts for multitasking, persistence or context isolation
+- Each session can be used and reset individually
+- Sessions persist until reset
+- Session 0 is default
+- Any session number can be used
 
-- Session 0: Default session for general commands
-- Session 1+: Additional sessions for isolated environments
-
-Each session maintains:
-- Shell state (environment variables, working directory)
-- Command history
-- Output buffer
 
 ## Virtual Environment Considerations
 
@@ -142,8 +201,6 @@ Each session maintains:
 - **Linux**: Fully tested and supported
 - **macOS**: Fully tested and supported
 - **Windows**: Experimental support via pywinpty
-  - Install with: `pip install -e ".[windows]"`
-  - Use `cmd.exe` or `powershell.exe` as executable
   - Some features may behave differently
 
 ## Architecture
@@ -177,6 +234,7 @@ See the LICENSE file for full license text and attribution details.
 **Built on Agent Zero's proven code execution implementation.**
 
 This MCP server preserves and reuses Agent Zero's battle-tested code:
+
 - Core execution logic from `code_execution_tool.py`
 - Helper modules: `tty_session.py`, `shell_local.py`, `print_style.py`, `strings.py`
 - All system message prompts

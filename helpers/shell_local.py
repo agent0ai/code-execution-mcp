@@ -1,3 +1,4 @@
+import os
 import select
 import subprocess
 import time
@@ -7,13 +8,13 @@ from . import tty_session
 from .shell_utils import clean_string
 
 class LocalInteractiveSession:
-    def __init__(self, executable: str = "/bin/bash"):
+    def __init__(self, executable: str | None = None):
         self.executable = executable
         self.session: tty_session.TTYSession|None = None
         self.full_output = ''
 
     async def connect(self):
-        self.session = tty_session.TTYSession(self.executable)
+        self.session = tty_session.TTYSession(self.executable, env=os.environ.copy())
         await self.session.start()
         await self.session.read_full_until_idle(idle_timeout=1, total_timeout=1)
 

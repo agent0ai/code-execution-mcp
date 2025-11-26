@@ -4,6 +4,7 @@ import shlex
 import time
 import re
 import os
+import sys
 from helpers.print_style import PrintStyle
 from helpers.shell_local import LocalInteractiveSession
 from helpers.strings import truncate_text as truncate_text_string
@@ -23,7 +24,7 @@ class State:
 
 class CodeExecutionTool:
 
-    def __init__(self, executable: str = "/bin/bash", init_commands: list[str] | None = None,
+    def __init__(self, executable: str | None = None, init_commands: list[str] | None = None,
                  first_output_timeout: int = 30, between_output_timeout: int = 15,
                  dialog_timeout: int = 5, max_exec_timeout: int = 180):
         self.executable = executable
@@ -83,7 +84,7 @@ class CodeExecutionTool:
 
     async def execute_python_code(self, session: int, code: str, reset: bool = False):
         escaped_code = shlex.quote(code)
-        command = f"ipython -c {escaped_code}"
+        command = f"{sys.executable} -m IPython -c {escaped_code}"
         prefix = "python> " + self.format_command_for_output(code) + "\n\n"
         return await self.terminal_session(session, command, reset, prefix)
 

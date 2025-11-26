@@ -4,14 +4,19 @@ import sys
 from fastmcp import FastMCP
 from code_execution_tool import CodeExecutionTool
 
+# Helpers for debugging
+version = f"v0.1.2, Python {sys.version.split(' ')[0]}, executable={sys.executable}"
+os.environ["CODE_EXEC_MCP_VERSION"] = version
+
 # Initialize FastMCP server
 mcp = FastMCP(
     "code-execution-mcp",
-    instructions="Execute terminal commands and Python code on the host system using Agent Zero's battle-tested code execution tool."
+    instructions=f"Execute terminal commands and Python code on the host system using Agent Zero's battle-tested code execution tool. Version: {version}",
+    version=version
 )
 
 # Get configuration from environment variables with defaults
-EXECUTABLE = os.getenv("CODE_EXEC_EXECUTABLE", "/bin/bash")
+EXECUTABLE = os.getenv("CODE_EXEC_EXECUTABLE", "")
 INIT_COMMANDS_STR = os.getenv("CODE_EXEC_INIT_COMMANDS", "")
 INIT_COMMANDS = [cmd.strip() for cmd in INIT_COMMANDS_STR.split(";") if cmd.strip()] if INIT_COMMANDS_STR else []
 

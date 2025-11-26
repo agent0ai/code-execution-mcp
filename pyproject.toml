@@ -1,6 +1,6 @@
 [project]
 name = "code-execution-mcp"
-version = "0.1.0"
+version = "0.1.2"
 description = "MCP server exposing Agent Zero's code execution capabilities"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -8,11 +8,8 @@ dependencies = [
     "fastmcp>=2.0.0",
     "ipython>=8.0.0",
     "webcolors>=1.13.0",
-]
-
-[project.optional-dependencies]
-windows = [
-    "pywinpty>=2.0.0",
+    "nest_asyncio>=1.6.0",
+    "pywinpty>=2.0.0; sys_platform == 'win32'",
 ]
 
 [project.scripts]

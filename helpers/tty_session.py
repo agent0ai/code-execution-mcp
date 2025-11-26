@@ -16,7 +16,12 @@ sys.stdout.reconfigure(errors="replace")  # type: ignore
 
 class TTYSession:
     def __init__(self, cmd, *, cwd=None, env=None, encoding="utf-8", echo=False):
-        self.cmd = cmd if isinstance(cmd, str) else " ".join(cmd)
+        if cmd:
+            self.cmd = cmd if isinstance(cmd, str) else " ".join(cmd)
+        elif _IS_WIN:
+            self.cmd = "powershell.exe"
+        else:
+            self.cmd = "/bin/bash"
         self.cwd = cwd
         self.env = env or os.environ.copy()
         self.encoding = encoding
