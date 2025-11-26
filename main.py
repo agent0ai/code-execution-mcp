@@ -6,7 +6,7 @@ from code_execution_tool import CodeExecutionTool
 
 # Initialize FastMCP server
 mcp = FastMCP(
-    "A0-Code-Tool",
+    "code-execution-mcp",
     instructions="Execute terminal commands and Python code on the host system using Agent Zero's battle-tested code execution tool."
 )
 
