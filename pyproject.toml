@@ -1,0 +1,27 @@
+[project]
+name = "code-execution-mcp"
+version = "0.1.0"
+description = "MCP server exposing Agent Zero's code execution capabilities"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.0.0",
+    "ipython>=8.0.0",
+    "webcolors>=1.13.0",
+]
+
+[project.optional-dependencies]
+windows = [
+    "pywinpty>=2.0.0",
+]
+
+[project.scripts]
+code-execution-mcp = "main:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]

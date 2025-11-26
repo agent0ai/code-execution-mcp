@@ -1,6 +1,13 @@
 MIT License
 
-Copyright (c) 2025 Agent Zero
+This project is a minimal MCP wrapper around Agent Zero's code execution tool.
+
+Original Agent Zero Code:
+Copyright (c) 2025 Agent Zero, s.r.o
+https://github.com/agent0ai/agent-zero
+
+MCP Wrapper:
+Copyright (c) 2025
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +26,21 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+ATTRIBUTION
+
+This MCP server wraps and reuses code from Agent Zero:
+https://github.com/agent0ai/agent-zero
+
+Files derived from Agent Zero (with minimal modifications):
+- helpers/tty_session.py (unchanged)
+- helpers/shell_local.py (added executable parameter)
+- helpers/print_style.py (changed log directory)
+- helpers/strings.py (removed files dependency)
+- code_execution_tool.py (removed agent dependencies, preserved all core logic)
+- prompts/*.md (unchanged)
+
+All credit for the battle-tested code execution implementation goes to the
+Agent Zero team.
