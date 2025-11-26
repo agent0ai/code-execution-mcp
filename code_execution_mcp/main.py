@@ -2,7 +2,18 @@
 import os
 import sys
 from fastmcp import FastMCP
-from code_execution_mcp.code_execution_tool import CodeExecutionTool
+
+try:
+    # Prefer package-style import when running as an installed package or with -m
+    from code_execution_mcp.code_execution_tool import CodeExecutionTool
+except ImportError:
+    # Fallback for running this file directly, e.g. `python /path/to/code_execution_mcp/main.py`
+    # Ensure the project root (parent of this directory) is on sys.path so that
+    # `code_execution_mcp` can be imported as a proper package and relative imports work.
+    package_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if package_root not in sys.path:
+        sys.path.insert(0, package_root)
+    from code_execution_mcp.code_execution_tool import CodeExecutionTool
 
 # Helpers for debugging
 version = f"v0.1.3, Python {sys.version.split(' ')[0]}, executable={sys.executable}"
