@@ -5,7 +5,7 @@ from fastmcp import FastMCP
 from code_execution_tool import CodeExecutionTool
 
 # Helpers for debugging
-version = f"v0.1.2, Python {sys.version.split(' ')[0]}, executable={sys.executable}"
+version = f"v0.1.3, Python {sys.version.split(' ')[0]}, executable={sys.executable}"
 os.environ["CODE_EXEC_MCP_VERSION"] = version
 
 # Initialize FastMCP server
@@ -42,7 +42,7 @@ code_tool = CodeExecutionTool(
 async def execute_terminal(command: str, session: int = 0) -> str:
     try:
         result = await code_tool.execute_terminal_command(session=session, command=command)
-        return result
+        return result or "[No output]"
     except Exception as e:
         return f"Error executing terminal command: {str(e)}"
 
@@ -51,7 +51,7 @@ async def execute_terminal(command: str, session: int = 0) -> str:
 async def execute_python(code: str, session: int = 0) -> str:
     try:
         result = await code_tool.execute_python_code(session=session, code=code)
-        return result
+        return result or "[No output]"
     except Exception as e:
         return f"Error executing Python code: {str(e)}"
 
@@ -60,7 +60,7 @@ async def execute_python(code: str, session: int = 0) -> str:
 async def get_output(session: int = 0) -> str:
     try:
         result = await code_tool.get_terminal_output(session=session)
-        return result
+        return result or "[No output]"
     except Exception as e:
         return f"Error getting terminal output: {str(e)}"
 
@@ -69,7 +69,7 @@ async def get_output(session: int = 0) -> str:
 async def reset_terminal(session: int = 0, reason: str | None = None) -> str:
     try:
         result = await code_tool.reset_terminal(session=session, reason=reason)
-        return result
+        return result or "[No output]"
     except Exception as e:
         return f"Error resetting terminal: {str(e)}"
 

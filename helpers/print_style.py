@@ -19,8 +19,9 @@ class PrintStyle:
 
         if PrintStyle.log_file_path is None:
             try:
-                # Use temp directory for logs (works in read-only environments like MCP)
-                logs_dir = os.path.join(tempfile.gettempdir(), "code-execution-mcp-logs")
+                if not (logs_dir := os.environ.get("CODE_EXEC_LOG_DIR")):
+                    raise Exception("Logging disabled")
+
                 os.makedirs(logs_dir, exist_ok=True)
                 log_filename = datetime.now().strftime("log_%Y%m%d_%H%M%S.html")
                 PrintStyle.log_file_path = os.path.join(logs_dir, log_filename)
@@ -81,7 +82,7 @@ class PrintStyle:
     def _add_padding_if_needed(self):
         if self.padding and not self.padding_added:
             if not self.log_only:
-                print()  # Print an empty line for padding
+                print(file=sys.stderr)  # Print an empty line for padding
             self._log_html("<br>")
             self.padding_added = True
 
@@ -110,11 +111,11 @@ class PrintStyle:
     def print(self, *args, sep=' ', **kwargs):
         self._add_padding_if_needed()
         if not PrintStyle.last_endline:
-            print()
+            print(file=sys.stderr)
             self._log_html("<br>")
         plain_text, styled_text, html_text = self.get(*args, sep=sep, **kwargs)
         if not self.log_only:
-            print(styled_text, end='\n', flush=True)
+            print(styled_text, end='\n', flush=True, file=sys.stderr)
         self._log_html(html_text+"<br>\n")
         PrintStyle.last_endline = True
 
@@ -122,7 +123,7 @@ class PrintStyle:
         self._add_padding_if_needed()
         plain_text, styled_text, html_text = self.get(*args, sep=sep, **kwargs)
         if not self.log_only:
-            print(styled_text, end='', flush=True)
+            print(styled_text, end='', flush=True, file=sys.stderr)
         self._log_html(html_text)
         PrintStyle.last_endline = False
 

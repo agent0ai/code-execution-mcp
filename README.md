@@ -2,7 +2,7 @@
 
 A Model Context Protocol (MCP) server that exposes [Agent Zero's](https://github.com/agent0ai/agent-zero) battle-tested code execution capabilities.
 
-This MCP server allows any AI agent (Claude, GPT-4, etc.) to execute terminal commands and Python code on the host system using Agent Zero's proven implementation.
+This MCP server allows any AI agent (Claude, Cursor, Windsurf, etc.) to execute terminal commands and Python code on the host system using Agent Zero's proven implementation.
 
 ## Features
 
@@ -58,11 +58,14 @@ export CODE_EXEC_FIRST_OUTPUT_TIMEOUT=30      # Wait for first output
 export CODE_EXEC_BETWEEN_OUTPUT_TIMEOUT=15    # Wait between output chunks
 export CODE_EXEC_DIALOG_TIMEOUT=5             # Detect dialog prompts
 export CODE_EXEC_MAX_EXEC_TIMEOUT=180         # Maximum execution time
+
+# Log directory (default empty = logging disabled)
+export CODE_EXEC_LOG_DIR=/path/to/logs
 ```
 
 ### Additional examples
 
-- start sessions with custom shell and python environment
+- start sessions with custom shell and python environment + logging
 
 ```json
 {
@@ -72,7 +75,8 @@ export CODE_EXEC_MAX_EXEC_TIMEOUT=180         # Maximum execution time
       "args": ["code-execution-mcp"],
       "env": {
         "CODE_EXEC_EXECUTABLE": "/bin/zsh",
-        "CODE_EXEC_INIT_COMMANDS": "source /Users/lazy/Projects/A0-code-tool-MCP/code-execution-mcp/.venv/bin/activate"
+        "CODE_EXEC_INIT_COMMANDS": "source /Users/lazy/Projects/code-execution-mcp/.venv/bin/activate",
+        "CODE_EXEC_LOG_DIR": "/Users/lazy/Projects/code-execution-mcp/logs"
       }
     }
   }
