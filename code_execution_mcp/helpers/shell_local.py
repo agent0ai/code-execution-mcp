@@ -7,14 +7,25 @@ from typing import Optional, Tuple
 from . import tty_session
 from .shell_utils import clean_string
 
+
 class LocalInteractiveSession:
-    def __init__(self, executable: str | None = None):
+    def __init__(
+        self,
+        executable: str | None = None,
+        term_type: str = "dumb",
+    ):
         self.executable = executable
-        self.session: tty_session.TTYSession|None = None
+        self.term_type = term_type
+        self.session: tty_session.TTYSession | None = None
         self.full_output = ''
 
     async def connect(self):
-        self.session = tty_session.TTYSession(self.executable, env=os.environ.copy())
+        env = os.environ.copy()
+        env["TERM"] = self.term_type
+        self.session = tty_session.TTYSession(
+            self.executable,
+            env=env,
+        )
         await self.session.start()
         await self.session.read_full_until_idle(idle_timeout=1, total_timeout=1)
 
@@ -28,7 +39,7 @@ class LocalInteractiveSession:
             raise Exception("Shell not connected")
         self.full_output = ""
         await self.session.sendline(command)
- 
+
     async def read_output(self, timeout: float = 0, reset_full_output: bool = False) -> Tuple[str, Optional[str]]:
         if not self.session:
             raise Exception("Shell not connected")

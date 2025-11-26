@@ -2,7 +2,7 @@
 import os
 import sys
 from fastmcp import FastMCP
-from code_execution_tool import CodeExecutionTool
+from code_execution_mcp.code_execution_tool import CodeExecutionTool
 
 # Helpers for debugging
 version = f"v0.1.3, Python {sys.version.split(' ')[0]}, executable={sys.executable}"

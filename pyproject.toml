@@ -13,10 +13,14 @@ dependencies = [
 ]
 
 [project.scripts]
-code-execution-mcp = "main:main"
+code-execution-mcp = "code_execution_mcp.main:main"
 
 [tool.setuptools]
-py-modules = ["main", "code_execution_tool"]
+py-modules = ["code_execution_mcp.main", "code_execution_mcp.code_execution_tool"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"code_execution_mcp" = ["prompts/*.md"]
 
 [build-system]
 requires = ["setuptools>=61.0"]
